@@ -5083,7 +5083,7 @@ class Less_Tree_Dimension extends Less_Tree{
                 $other = $other->convertTo( $this->unit->usedUnits());
 
                 if( Less_Parser::$options['strictUnits'] && $other->unit->toString() !== $unit->toCSS() ){
-                    throw new Less_Exception_Compiler("Incompatible units. Change the units or use the unit function. Bad units: '".$unit->toString() . "' and ".$other->unit->toString()+"'.");
+                    throw new Less_Exception_Compiler("Incompatible units. Change the units or use the unit function. Bad units: '".$unit->toString() . "' and ".$other->unit->toString()."'.");
                 }
 
                 $value = Less_Functions::operate( $op, $this->value, $other->value);
@@ -7785,7 +7785,7 @@ class Less_Tree_Mixin_Call extends Less_Tree{
             } else {
                 $defaultResult = $defTrue;
                 if( ($count[$defTrue] + $count[$defFalse]) > 1 ){
-                    throw Exception( 'Ambiguous use of `default()` found when matching for `'. $this->format($args) + '`' );
+                    throw Exception( 'Ambiguous use of `default()` found when matching for `'. $this->format($args) . '`' );
                 }
             }
 
@@ -9384,7 +9384,7 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
                 case 40:
                     $parenLevel++;
                     $lastParen = $this->parserCurrentIndex;
-                    continue;
+                    break;
 
                 // )
                 case 41:
@@ -9392,18 +9392,18 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
                     if( $parenLevel < 0 ){
                         return $this->fail("missing opening `(`");
                     }
-                    continue;
+                    break;
 
                 // ;
                 case 59:
                     //if (!$parenLevel) { $this->emitChunk();   }
-                    continue;
+                    break;
 
                 // {
                 case 123:
                     $level++;
                     $lastOpening = $this->parserCurrentIndex;
-                    continue;
+                    break;
 
                 // }
                 case 125:
@@ -9413,10 +9413,10 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
 
                     }
                     //if (!$level && !$parenLevel) { $this->emitChunk(); }
-                    continue;
+                    break;
                 // \
                 case 92:
-                    if ($this->parserCurrentIndex < $this->input_len - 1) { $this->parserCurrentIndex++; continue; }
+                    if ($this->parserCurrentIndex < $this->input_len - 1) { $this->parserCurrentIndex++; break; }
                     return $this->fail("unescaped `\\`");
 
                 // ", ' and `
@@ -9436,12 +9436,12 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
                             $this->parserCurrentIndex++;
                         }
                     }
-                    if ($matched) { continue; }
+                    if ($matched) { break; }
                     return $this->fail("unmatched `" + chr($cc) + "`", $currentChunkStartIndex);
 
                 // /, check for comment
                 case 47:
-                    if ($parenLevel || ($this->parserCurrentIndex == $this->input_len - 1)) { continue; }
+                    if ($parenLevel || ($this->parserCurrentIndex == $this->input_len - 1)) { break; }
                     $cc2 = $this->CharCode($this->parserCurrentIndex+1);
                     if ($cc2 == 47) {
                         // //, find lnfeed
@@ -9462,14 +9462,14 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
                             return $this->fail("missing closing `*/`", $currentChunkStartIndex);
                         }
                     }
-                    continue;
+                    break;
 
                 // *, check for unmatched */
                 case 42:
                     if (($this->parserCurrentIndex < $this->input_len - 1) && ($this->CharCode($this->parserCurrentIndex+1) == 47)) {
                         return $this->fail("unmatched `/*`");
                     }
-                    continue;
+                    break;
             }
         }
 
